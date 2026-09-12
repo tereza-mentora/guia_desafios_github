@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guia de Git & GitHub — Prof. Tereza Oliveira</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --git-orange: #F05033;
+    --bg: #f5f4f0;
+    --surface: #ffffff;
+    --surface2: #f0ede8;
+    --border: rgba(0,0,0,0.10);
+    --border2: rgba(0,0,0,0.18);
+    --text: #1a1a18;
+    --text2: #5a5a56;
+    --text3: #8a8a84;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #111110;
+      --surface: #1c1c1a;
+      --surface2: #252523;
+      --border: rgba(255,255,255,0.08);
+      --border2: rgba(255,255,255,0.15);
+      --text: #e8e6e0;
+      --text2: #9a9890;
+      --text3: #6a6a64;
+    }
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 2rem 1rem 4rem;
+  }
+
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+  }
+
+  .header {
+    background: linear-gradient(135deg, #F05033 0%, #c0392b 55%, #922b21 100%);
+    padding: 2.5rem 2rem 2rem;
+    border-radius: var(--radius);
+    margin-bottom: 1.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -50px; right: -50px;
+    width: 220px; height: 220px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.07);
+  }
+
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -70px; left: 30%;
+    width: 320px; height: 320px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+  }
+
+  .header-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.9);
+    margin-bottom: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    position: relative; z-index: 1;
+  }
+
+  .header h1 {
+    font-size: 28px;
+    font-weight: 600;
+    color: #fff;
+    line-height: 1.2;
+    margin-bottom: 0.4rem;
+    position: relative; z-index: 1;
+  }
+
+  .header p {
+    font-size: 14px;
+    color: rgba(255,255,255,0.8);
+    position: relative; z-index: 1;
+  }
+
+  .nav-tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .tab-btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--border2);
+    background: var(--surface);
+    color: var(--text2);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .tab-btn:hover { border-color: #F05033; color: #F05033; }
+  .tab-btn.active { background: #F05033; border-color: #F05033; color: #fff; }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .section-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .concept-card {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .concept-title {
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 0.6rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .concept-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .concept-text {
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--text2);
+    margin-bottom: 0.75rem;
+  }
+
+  .analogy-box {
+    background: var(--surface2);
+    border-left: 3px solid #F05033;
+    padding: 0.75rem 1rem;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    font-size: 13px;
+    color: var(--text2);
+    font-style: italic;
+  }
+
+  .analogy-box strong {
+    color: var(--text);
+    font-style: normal;
+    font-weight: 500;
+  }
+
+  .cmd-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .cmd-card {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .cmd-header {
+    padding: 0.875rem 1rem 0.5rem;
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .cmd-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #F05033;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 4px;
+  }
+
+  .cmd-desc {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .cmd-body { padding: 0.75rem 1rem; }
+
+  .cmd-code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    background: var(--surface2);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.6rem 0.875rem;
+    color: var(--text);
+    margin-bottom: 6px;
+    display: block;
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+  }
+
+  .cmd-code:hover { border-color: #F05033; }
+
+  .copy-hint {
+    position: absolute;
+    right: 8px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 10px;
+    color: var(--text3);
+    font-family: 'DM Sans', sans-serif;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+
+  .cmd-code:hover .copy-hint { opacity: 1; }
+
+  .cmd-note {
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.5;
+  }
+
+  .inline-code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    background: var(--surface2);
+    border: 0.5px solid var(--border);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--text);
+  }
+
+  .challenge-card {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 1rem;
+    overflow: hidden;
+  }
+
+  .challenge-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .challenge-header:hover { background: var(--surface2); }
+
+  .challenge-num {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .challenge-meta { flex: 1; }
+
+  .challenge-name {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .challenge-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+
+  .tag {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 500;
+  }
+
+  .tag-easy { background: #e8f5e9; color: #2e7d32; }
+  .tag-medium { background: #fff3e0; color: #e65100; }
+  .tag-hard { background: #fce4ec; color: #880e4f; }
+  .tag-topic { background: var(--surface2); color: var(--text2); border: 0.5px solid var(--border); }
+
+  @media (prefers-color-scheme: dark) {
+    .tag-easy { background: #1b5e2033; color: #81c784; }
+    .tag-medium { background: #bf360c33; color: #ffb74d; }
+    .tag-hard { background: #880e4f33; color: #f48fb1; }
+  }
+
+  .challenge-chevron {
+    font-size: 11px;
+    color: var(--text3);
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+
+  .challenge-card.open .challenge-chevron { transform: rotate(180deg); }
+
+  .challenge-body {
+    display: none;
+    padding: 0 1.25rem 1.25rem;
+    border-top: 0.5px solid var(--border);
+  }
+
+  .challenge-card.open .challenge-body { display: block; }
+
+  .challenge-objective {
+    font-size: 14px;
+    color: var(--text2);
+    line-height: 1.65;
+    padding-top: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .step-list { list-style: none; counter-reset: steps; margin-bottom: 1rem; }
+
+  .step-list li {
+    counter-increment: steps;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+    font-size: 14px;
+    color: var(--text2);
+    line-height: 1.55;
+  }
+
+  .step-list li::before {
+    content: counter(steps);
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: #F05033;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .challenge-goal {
+    background: var(--surface2);
+    border-radius: var(--radius-sm);
+    padding: 0.75rem 1rem;
+    font-size: 13px;
+    color: var(--text2);
+    border-left: 3px solid #F05033;
+  }
+
+  .challenge-goal strong {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: #F05033;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 4px;
+  }
+
+  .progress-bar {
+    background: var(--surface2);
+    border-radius: 20px;
+    height: 6px;
+    margin-bottom: 0.5rem;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    border-radius: 20px;
+    background: linear-gradient(90deg, #F05033, #e74c3c);
+    transition: width 0.4s ease;
+  }
+
+  .progress-label {
+    font-size: 12px;
+    color: var(--text2);
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+  }
+
+  .workflow-grid { display: flex; flex-direction: column; gap: 0; }
+
+  .flow-step {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+    margin-bottom: 0;
+  }
+
+  .flow-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 20px;
+  }
+
+  .flow-content { flex: 1; }
+
+  .flow-title { font-size: 15px; font-weight: 500; margin-bottom: 4px; }
+
+  .flow-desc {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.55;
+    margin-bottom: 8px;
+  }
+
+  .flow-cmd {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    background: var(--surface2);
+    border: 0.5px solid var(--border);
+    padding: 4px 10px;
+    border-radius: var(--radius-sm);
+    color: #F05033;
+    display: inline-block;
+  }
+
+  .flow-connector {
+    text-align: center;
+    color: var(--text3);
+    font-size: 20px;
+    padding: 2px 0;
+  }
+
+  .glossary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 0.875rem;
+  }
+
+  .glossary-item {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+  }
+
+  .glossary-term {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 500;
+    color: #F05033;
+    margin-bottom: 6px;
+  }
+
+  .glossary-def {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.55;
+  }
+
+  .tip-box {
+    background: #fff3e0;
+    border: 1px solid #ffe0b2;
+    border-radius: var(--radius-sm);
+    padding: 0.875rem 1rem;
+    font-size: 13px;
+    color: #bf360c;
+    margin-top: 1rem;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    line-height: 1.55;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .tip-box { background: #bf360c22; border-color: #bf360c44; color: #ffb74d; }
+  }
+
+  .branch-block {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    margin-top: 1.5rem;
+  }
+
+  .branch-codes {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 0.875rem;
+  }
+
+  .branch-code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    background: var(--surface2);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 8px 14px;
+    color: var(--text);
+    display: block;
+  }
+
+  .branch-code.comment { color: var(--text3); font-style: italic; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <div class="header-badge">$ git init guia-iniciante</div>
+    <h1>Guia de Git & GitHub</h1>
+    <p>Para estudantes iniciantes — Prof. Tereza Oliveira</p>
+  </div>
+
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="showSection('conceitos', this)">📖 Conceitos</button>
+    <button class="tab-btn" onclick="showSection('comandos', this)">💻 Comandos</button>
+    <button class="tab-btn" onclick="showSection('workflow', this)">🔄 Fluxo</button>
+    <button class="tab-btn" onclick="showSection('desafios', this)">🎯 Desafios</button>
+    <button class="tab-btn" onclick="showSection('glossario', this)">📚 Glossário</button>
+  </div>
+
+  <!-- CONCEITOS -->
+  <div id="sec-conceitos" class="section active">
+    <div class="section-title">📖 O que é Git e GitHub?</div>
+
+    <div class="concept-card">
+      <div class="concept-title">
+        <div class="concept-dot" style="background:#F05033"></div>
+        Git — O Controle de Versão
+      </div>
+      <div class="concept-text">Git é um sistema que registra todas as alterações feitas em seus arquivos ao longo do tempo. Com ele, você consegue voltar no passado, comparar versões diferentes e trabalhar em equipe sem bagunça.</div>
+      <div class="analogy-box"><strong>Analogia:</strong> Imagina que seu código é um livro que você está escrevendo. O Git é como tirar fotos de cada página em momentos diferentes. Se você errar alguma coisa, é só voltar à foto anterior!</div>
+    </div>
+
+    <div class="concept-card">
+      <div class="concept-title">
+        <div class="concept-dot" style="background:#24292e"></div>
+        GitHub — A Nuvem do Código
+      </div>
+      <div class="concept-text">GitHub é uma plataforma online onde você guarda seus repositórios Git. É como um Google Drive, mas especialmente feito para código. Você pode compartilhar seus projetos, colaborar com outros devs e montar seu portfólio.</div>
+      <div class="analogy-box"><strong>Analogia:</strong> O Git é a câmera fotográfica, e o GitHub é o álbum online onde você guarda e compartilha essas fotos com todo mundo.</div>
+    </div>
+
+    <div class="concept-card">
+      <div class="concept-title">
+        <div class="concept-dot" style="background:#4CAF50"></div>
+        Repositório (repo)
+      </div>
+      <div class="concept-text">É a pasta do seu projeto que o Git fica monitorando. Dentro dela, o Git cria uma pasta oculta chamada <code class="inline-code">.git</code> que guarda todo o histórico.</div>
+      <div class="analogy-box"><strong>Analogia:</strong> O repositório é a pasta de um projeto escolar. Tudo que está dentro dela o Git acompanha. A pasta <code class="inline-code">.git</code> é o diário secreto onde o Git anota tudo.</div>
+    </div>
+
+    <div class="concept-card">
+      <div class="concept-title">
+        <div class="concept-dot" style="background:#4fc3f7"></div>
+        Commit — O Ponto de Salvamento
+      </div>
+      <div class="concept-text">Um commit é um ponto de salvamento do seu trabalho. Cada commit tem uma mensagem que explica o que foi feito e fica registrado no histórico para sempre.</div>
+      <div class="analogy-box"><strong>Analogia:</strong> Sabe quando você joga um videogame e salva numa fase especial? O commit é esse salvamento. Se você morrer depois (errar o código), é só voltar para esse ponto.</div>
+    </div>
+
+    <div class="concept-card">
+      <div class="concept-title">
+        <div class="concept-dot" style="background:#ce93d8"></div>
+        Branch — A Linha do Tempo Paralela
+      </div>
+      <div class="concept-text">Uma branch é uma linha de desenvolvimento separada. Você pode criar uma branch para testar uma nova funcionalidade sem afetar o código principal, e depois juntar tudo com um merge.</div>
+      <div class="analogy-box"><strong>Analogia:</strong> Imagine que você está escrevendo um trabalho e quer testar um trecho diferente sem perder o que já escreveu. Você tira uma xerox (cria uma branch), experimenta nela, e se ficar bom, cola no original (merge).</div>
+    </div>
+  </div>
+
+  <!-- COMANDOS -->
+  <div id="sec-comandos" class="section">
+    <div class="section-title">💻 Comandos Essenciais</div>
+    <div class="cmd-grid">
+
+      <div class="cmd-card">
+        <div class="cmd-header">
+          <div class="cmd-label">🚀 Iniciar</div>
+          <div class="cmd-desc">Configurar Git</div>
+        </div>
+        <div class="cmd-body">
+          <code class="cmd-code" onclick="copyCode(this)">git config --global user.name "Seu Nome"<span class="copy-hint">copiar</span></code>
+          <code class="cmd-code" onclick="copyCode(this)">git config --global user.email "email@x.com"<span class="copy-hint">copiar</span></code>
+          <code class="cmd-code" onclick="copyCode(this)">git init<span class="copy-hint">copiar</span></code>
+          <div class="cmd-note">Configure seu nome e email antes de usar o Git. O <code class="inline-code">git init</code> cria um novo repositório na pasta atual.</div>
+        </div>
+      </div>
+
+      <div class="cmd-card">
+        <div class="cmd-header">
+          <div class="cmd-label">📋 Verificar</div>
+          <div class="cmd-desc">Ver o que está acontecendo</div>
+        </div>
+        <div class="cmd-body">
+          <code class="cmd-code" onclick="copyCode(this)">git status<span class="copy-hint">copiar</span></code>
+          <code class="cmd-code" onclick="copyCode(this)">git log<span class="copy-hint">copiar</span></code>
+          <code class="cmd-code" onclick="copyCode(this)">git log --oneline<span class="copy-hint">copiar</span></code>
+          <div class="cmd-note">Use sempre o <code class="inline-code">git status</code> para ver o estado atual. O <code class="inline-code">--oneline</code> mostra o histórico de forma resumida.</div>
+        </div>
+      </div>
+
+      <div class="cmd-card">
+        <div class="cmd-header">
+          <div class="cmd-label">➕ Adicionar</div>
+          <div class="cmd-desc">Preparar arquivos para commit</div>
+        </div>
+        <div class="cmd-body">
+          <code class="cmd-code" onclick="copyCode(this)">git add nome-do-arquivo.txt<span class="copy-hint">copiar</span></code>
+          <code class="cmd-code" onclick="copyCode(this)">git add .<span class="copy-hint">copiar</span></code>
+          <div class="cmd-note">O <code class="inline-code">git add .</code> adiciona todos os arquivos modificados de uma vez. Cuidado: revise antes!</div>
+        </div>
+      </div>
+
+      <div class="cmd-card">
+        <div class="cmd-header">
+          <div class="cmd-label">💾 Salvar</div>
+          <div class="cmd-desc">Criar um commit</div>
+        </div>
+        <div class="cmd-body">
+          <code class="cmd-code" onclick="copyCode(this)">git commit -m "sua mensagem aqui"<span class="copy-hint">copiar</span></code>
+          <div class="cmd-note">A mensagem do commit deve ser clara e no imperativo: "Adiciona botão de login" em vez de "adicionei" ou "botão".</div>
+        </div>
+      </div>
+
+      <div class="cmd-card">
+        <div class="cmd-header">
+          <div class="cmd-label">🌐 GitHub</div>
+          <div class="cmd-desc">Conectar com repositório remoto</div>
+        </div>
+        <div class="cmd-body">
+          <code class="cmd-code" onclick="copyCode(this)">git remote add origin URL<span class="copy-hint">copiar</span></code>
+          <code class="cmd-code" onclick="copyCode(this)">git push -u origin main<span class="copy-hint">copiar</span></code>
+          <code class="cmd-code" onclick="copyCode(this)">git pull<span class="copy-hint">copiar</span></code>
+          <div class="cmd-note">O <code class="inline-code">push</code> envia para o GitHub. O <code class="inline-code">pull</code> traz as novidades do GitHub para sua máquina.</div>
+        </div>
+      </div>
+
+      <div class="cmd-card">
+        <div class="cmd-header">
+          <div class="cmd-label">🌿 Branches</div>
+          <div class="cmd-desc">Trabalhar em paralelo</div>
+        </div>
+        <div class="cmd-body">
+          <code class="cmd-code" onclick="copyCode(this)">git branch nome-da-branch<span class="copy-hint">copiar</span></code>
+          <code class="cmd-code" onclick="copyCode(this)">git checkout nome-da-branch<span class="copy-hint">copiar</span></code>
+          <code class="cmd-code" onclick="copyCode(this)">git checkout -b nova-branch<span class="copy-hint">copiar</span></code>
+          <div class="cmd-note">O <code class="inline-code">-b</code> cria e já troca para a nova branch de uma vez só.</div>
+        </div>
+      </div>
+
+    </div>
+    <div class="tip-box">
+      💡 <div><strong>Dica de ouro:</strong> Sempre rode <code class="inline-code">git status</code> antes e depois de qualquer operação. Ele é seu melhor amigo para entender o que o Git está vendo!</div>
+    </div>
+  </div>
+
+  <!-- WORKFLOW -->
+  <div id="sec-workflow" class="section">
+    <div class="section-title">🔄 Fluxo Básico de Trabalho</div>
+    <p style="font-size:14px;color:var(--text2);margin-bottom:1.25rem;line-height:1.65">
+      Todo desenvolvedor repete esse ciclo dezenas de vezes por dia. Entender esse fluxo é o segredo para usar o Git com confiança.
+    </p>
+    <div class="workflow-grid">
+      <div class="flow-step">
+        <div class="flow-icon" style="background:#fff3e0;">✏️</div>
+        <div class="flow-content">
+          <div class="flow-title">1. Modificar</div>
+          <div class="flow-desc">Você edita, cria ou deleta arquivos no seu projeto. O Git detecta automaticamente tudo que mudou.</div>
+          <span class="flow-cmd">working directory</span>
+        </div>
+      </div>
+      <div class="flow-connector">↓</div>
+      <div class="flow-step">
+        <div class="flow-icon" style="background:#e3f2fd;">📦</div>
+        <div class="flow-content">
+          <div class="flow-title">2. Adicionar à Área de Preparo</div>
+          <div class="flow-desc">Você escolhe quais mudanças quer incluir no próximo commit. Nem sempre você quer commitar tudo de uma vez.</div>
+          <span class="flow-cmd">git add .</span>
+        </div>
+      </div>
+      <div class="flow-connector">↓</div>
+      <div class="flow-step">
+        <div class="flow-icon" style="background:#e8f5e9;">💾</div>
+        <div class="flow-content">
+          <div class="flow-title">3. Commitar</div>
+          <div class="flow-desc">Você registra as mudanças com uma mensagem descritiva. Esse momento fica salvo no histórico para sempre.</div>
+          <span class="flow-cmd">git commit -m "mensagem"</span>
+        </div>
+      </div>
+      <div class="flow-connector">↓</div>
+      <div class="flow-step">
+        <div class="flow-icon" style="background:#f3e5f5;">☁️</div>
+        <div class="flow-content">
+          <div class="flow-title">4. Enviar para o GitHub</div>
+          <div class="flow-desc">Você sobe seu trabalho para a nuvem. Agora está seguro e acessível de qualquer lugar — ou por qualquer colaborador.</div>
+          <span class="flow-cmd">git push origin main</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="branch-block">
+      <div class="section-title" style="font-size:15px;margin-bottom:0.5rem">🌿 Fluxo com Branches</div>
+      <p style="font-size:14px;color:var(--text2);line-height:1.65;margin-bottom:0.875rem">Quando trabalhar em equipe ou testar algo novo, use branches!</p>
+      <div class="branch-codes">
+        <code class="branch-code">git checkout -b feature/nova-funcionalidade</code>
+        <code class="branch-code comment"># ... faz as alterações, add e commit ...</code>
+        <code class="branch-code">git checkout main</code>
+        <code class="branch-code">git merge feature/nova-funcionalidade</code>
+      </div>
+    </div>
+  </div>
+
+  <!-- DESAFIOS -->
+  <div id="sec-desafios" class="section">
+    <div class="section-title">🎯 Desafios Práticos</div>
+    <p style="font-size:14px;color:var(--text2);margin-bottom:1rem;line-height:1.65">
+      Aprender Git é como aprender a andar de bicicleta — só praticando! Faça cada desafio na ordem e marque como concluído.
+    </p>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+    <div class="progress-label">
+      <span id="progress-text">0 de 6 desafios concluídos</span>
+      <span id="progress-pct">0%</span>
+    </div>
+
+    <!-- Desafio 1 -->
+    <div class="challenge-card" id="ch1">
+      <div class="challenge-header" onclick="toggleChallenge('ch1')">
+        <div class="challenge-num" style="background:#fff3e0;color:#F05033">01</div>
+        <div class="challenge-meta">
+          <div class="challenge-name">Meu Primeiro Repositório</div>
+          <div class="challenge-tags">
+            <span class="tag tag-easy">Fácil</span>
+            <span class="tag tag-topic">git init</span>
+            <span class="tag tag-topic">git add</span>
+            <span class="tag tag-topic">git commit</span>
+          </div>
+        </div>
+        <input type="checkbox" style="width:18px;height:18px;cursor:pointer;accent-color:#F05033;flex-shrink:0" onclick="event.stopPropagation();updateProgress()" title="Marcar como concluído">
+        <span class="challenge-chevron">▼</span>
+      </div>
+      <div class="challenge-body">
+        <div class="challenge-objective">Seu objetivo é criar um repositório Git local do zero, adicionar um arquivo e registrar seu primeiro commit. Isso é o "Olá, Mundo!" do Git!</div>
+        <ol class="step-list">
+          <li>Crie uma pasta chamada <code class="inline-code">meu-primeiro-repo</code> em qualquer lugar do seu computador</li>
+          <li>Abra o terminal e navegue até ela com <code class="inline-code">cd meu-primeiro-repo</code></li>
+          <li>Execute <code class="inline-code">git init</code> para transformá-la em um repositório</li>
+          <li>Crie um arquivo chamado <code class="inline-code">README.md</code> com uma apresentação sua</li>
+          <li>Execute <code class="inline-code">git status</code> e observe o que o Git diz</li>
+          <li>Execute <code class="inline-code">git add README.md</code></li>
+          <li>Execute <code class="inline-code">git commit -m "Adiciona apresentação no README"</code></li>
+          <li>Execute <code class="inline-code">git log</code> para ver seu commit no histórico!</li>
+        </ol>
+        <div class="challenge-goal">
+          <strong>✅ Objetivo alcançado quando:</strong>
+          O <code class="inline-code">git log</code> mostrar seu commit com a mensagem "Adiciona apresentação no README".
+        </div>
+      </div>
+    </div>
+
+    <!-- Desafio 2 -->
+    <div class="challenge-card" id="ch2">
+      <div class="challenge-header" onclick="toggleChallenge('ch2')">
+        <div class="challenge-num" style="background:#e3f2fd;color:#1565c0">02</div>
+        <div class="challenge-meta">
+          <div class="challenge-name">Subindo para o GitHub</div>
+          <div class="challenge-tags">
+            <span class="tag tag-easy">Fácil</span>
+            <span class="tag tag-topic">remote</span>
+            <span class="tag tag-topic">git push</span>
+          </div>
+        </div>
+        <input type="checkbox" style="width:18px;height:18px;cursor:pointer;accent-color:#F05033;flex-shrink:0" onclick="event.stopPropagation();updateProgress()" title="Marcar como concluído">
+        <span class="challenge-chevron">▼</span>
+      </div>
+      <div class="challenge-body">
+        <div class="challenge-objective">Agora vamos conectar seu repositório local com o GitHub e enviar seu código para a nuvem pela primeira vez!</div>
+        <ol class="step-list">
+          <li>Crie uma conta no <code class="inline-code">github.com</code> se ainda não tiver</li>
+          <li>Crie um novo repositório no GitHub chamado <code class="inline-code">meu-primeiro-repo</code> (sem inicializar com README)</li>
+          <li>Copie a URL do repositório (termina em <code class="inline-code">.git</code>)</li>
+          <li>No terminal, execute <code class="inline-code">git remote add origin SUA_URL_AQUI</code></li>
+          <li>Execute <code class="inline-code">git push -u origin main</code></li>
+          <li>Atualize a página do GitHub e veja seu arquivo lá!</li>
+        </ol>
+        <div class="challenge-goal">
+          <strong>✅ Objetivo alcançado quando:</strong>
+          Seu <code class="inline-code">README.md</code> aparecer no repositório do GitHub com sua apresentação.
+        </div>
+      </div>
+    </div>
+
+    <!-- Desafio 3 -->
+    <div class="challenge-card" id="ch3">
+      <div class="challenge-header" onclick="toggleChallenge('ch3')">
+        <div class="challenge-num" style="background:#e8f5e9;color:#2e7d32">03</div>
+        <div class="challenge-meta">
+          <div class="challenge-name">Histórico de Versões</div>
+          <div class="challenge-tags">
+            <span class="tag tag-easy">Fácil</span>
+            <span class="tag tag-topic">múltiplos commits</span>
+            <span class="tag tag-topic">git log</span>
+          </div>
+        </div>
+        <input type="checkbox" style="width:18px;height:18px;cursor:pointer;accent-color:#F05033;flex-shrink:0" onclick="event.stopPropagation();updateProgress()" title="Marcar como concluído">
+        <span class="challenge-chevron">▼</span>
+      </div>
+      <div class="challenge-body">
+        <div class="challenge-objective">Vamos criar um pequeno portfólio de projetos escolares e praticar a criação de múltiplos commits significativos.</div>
+        <ol class="step-list">
+          <li>No seu repositório, crie um arquivo <code class="inline-code">projetos.md</code></li>
+          <li>Adicione o título "# Meus Projetos" e commit: <code class="inline-code">"Cria arquivo de projetos"</code></li>
+          <li>Adicione o nome de 2 projetos que você já fez (ou quer fazer) e commit: <code class="inline-code">"Adiciona lista de projetos"</code></li>
+          <li>Adicione uma descrição para cada projeto e commit: <code class="inline-code">"Adiciona descrições dos projetos"</code></li>
+          <li>Execute <code class="inline-code">git log --oneline</code> para ver o histórico resumido</li>
+          <li>Execute <code class="inline-code">git push</code> para atualizar o GitHub</li>
+        </ol>
+        <div class="challenge-goal">
+          <strong>✅ Objetivo alcançado quando:</strong>
+          O <code class="inline-code">git log --oneline</code> mostrar pelo menos 4 commits (o README + 3 novos).
+        </div>
+      </div>
+    </div>
+
+    <!-- Desafio 4 -->
+    <div class="challenge-card" id="ch4">
+      <div class="challenge-header" onclick="toggleChallenge('ch4')">
+        <div class="challenge-num" style="background:#f3e5f5;color:#6a1b9a">04</div>
+        <div class="challenge-meta">
+          <div class="challenge-name">Explorando Branches</div>
+          <div class="challenge-tags">
+            <span class="tag tag-medium">Médio</span>
+            <span class="tag tag-topic">branch</span>
+            <span class="tag tag-topic">merge</span>
+          </div>
+        </div>
+        <input type="checkbox" style="width:18px;height:18px;cursor:pointer;accent-color:#F05033;flex-shrink:0" onclick="event.stopPropagation();updateProgress()" title="Marcar como concluído">
+        <span class="challenge-chevron">▼</span>
+      </div>
+      <div class="challenge-body">
+        <div class="challenge-objective">Hora de trabalhar com branches! Você vai criar uma branch para desenvolver uma nova seção do portfólio sem bagunçar o código principal.</div>
+        <ol class="step-list">
+          <li>Execute <code class="inline-code">git checkout -b feature/habilidades</code> para criar e entrar na nova branch</li>
+          <li>Crie um arquivo <code class="inline-code">habilidades.md</code> com suas habilidades em tecnologia</li>
+          <li>Faça commit: <code class="inline-code">"Adiciona arquivo de habilidades"</code></li>
+          <li>Execute <code class="inline-code">git checkout main</code> — note que o arquivo sumiu! Está seguro na outra branch</li>
+          <li>Execute <code class="inline-code">git merge feature/habilidades</code> para trazer de volta</li>
+          <li>O arquivo apareceu! Faça <code class="inline-code">git push</code></li>
+        </ol>
+        <div class="challenge-goal">
+          <strong>✅ Objetivo alcançado quando:</strong>
+          O arquivo <code class="inline-code">habilidades.md</code> aparecer na branch main após o merge.
+        </div>
+      </div>
+    </div>
+
+    <!-- Desafio 5 -->
+    <div class="challenge-card" id="ch5">
+      <div class="challenge-header" onclick="toggleChallenge('ch5')">
+        <div class="challenge-num" style="background:#fce4ec;color:#880e4f">05</div>
+        <div class="challenge-meta">
+          <div class="challenge-name">Clone & Pull Request</div>
+          <div class="challenge-tags">
+            <span class="tag tag-medium">Médio</span>
+            <span class="tag tag-topic">clone</span>
+            <span class="tag tag-topic">pull request</span>
+          </div>
+        </div>
+        <input type="checkbox" style="width:18px;height:18px;cursor:pointer;accent-color:#F05033;flex-shrink:0" onclick="event.stopPropagation();updateProgress()" title="Marcar como concluído">
+        <span class="challenge-chevron">▼</span>
+      </div>
+      <div class="challenge-body">
+        <div class="challenge-objective">Vamos simular o trabalho colaborativo! Você vai clonar o repositório de um colega, fazer uma contribuição e abrir um Pull Request — o coração do trabalho em equipe no GitHub.</div>
+        <ol class="step-list">
+          <li>Combine com um colega de turma para trocarem os links dos repos do GitHub</li>
+          <li>Execute <code class="inline-code">git clone URL_DO_REPO_DO_COLEGA</code> em uma pasta diferente</li>
+          <li>Entre na pasta clonada e crie uma branch: <code class="inline-code">git checkout -b contribuicao/seu-nome</code></li>
+          <li>Faça alguma melhoria: corrija um erro, adicione informação, melhore o README</li>
+          <li>Commit e <code class="inline-code">git push origin contribuicao/seu-nome</code></li>
+          <li>No GitHub, abra um Pull Request comparando sua branch com a main do colega</li>
+          <li>Escreva uma descrição explicando o que você mudou e por quê</li>
+        </ol>
+        <div class="challenge-goal">
+          <strong>✅ Objetivo alcançado quando:</strong>
+          Seu Pull Request aparecer aberto no repositório do colega, aguardando revisão.
+        </div>
+      </div>
+    </div>
+
+    <!-- Desafio 6 -->
+    <div class="challenge-card" id="ch6">
+      <div class="challenge-header" onclick="toggleChallenge('ch6')">
+        <div class="challenge-num" style="background:#e8eaf6;color:#283593">06</div>
+        <div class="challenge-meta">
+          <div class="challenge-name">Portfólio no GitHub Pages</div>
+          <div class="challenge-tags">
+            <span class="tag tag-hard">Avançado</span>
+            <span class="tag tag-topic">GitHub Pages</span>
+            <span class="tag tag-topic">deploy</span>
+          </div>
+        </div>
+        <input type="checkbox" style="width:18px;height:18px;cursor:pointer;accent-color:#F05033;flex-shrink:0" onclick="event.stopPropagation();updateProgress()" title="Marcar como concluído">
+        <span class="challenge-chevron">▼</span>
+      </div>
+      <div class="challenge-body">
+        <div class="challenge-objective">O desafio final! Você vai publicar uma página HTML na internet de graça usando o GitHub Pages. Qualquer pessoa no mundo poderá ver seu portfólio.</div>
+        <ol class="step-list">
+          <li>Crie um novo repositório no GitHub com o nome exato: <code class="inline-code">seu-usuario.github.io</code></li>
+          <li>Clone ele na sua máquina com <code class="inline-code">git clone URL</code></li>
+          <li>Crie um arquivo <code class="inline-code">index.html</code> com uma página simples de portfólio</li>
+          <li>Faça <code class="inline-code">git add .</code>, <code class="inline-code">git commit -m "Cria portfólio inicial"</code> e <code class="inline-code">git push</code></li>
+          <li>Aguarde 1–2 minutos e acesse <code class="inline-code">https://seu-usuario.github.io</code> no navegador</li>
+          <li>Continue melhorando e commitando — cada push atualiza seu site automaticamente!</li>
+        </ol>
+        <div class="challenge-goal">
+          <strong>✅ Objetivo alcançado quando:</strong>
+          Sua página aparecer online em <code class="inline-code">seu-usuario.github.io</code> e você conseguir compartilhar o link!
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GLOSSÁRIO -->
+  <div id="sec-glossario" class="section">
+    <div class="section-title">📚 Glossário Git</div>
+    <div class="glossary-grid">
+      <div class="glossary-item"><div class="glossary-term">repository</div><div class="glossary-def">A pasta do projeto monitorada pelo Git. Contém todos os arquivos e o histórico completo de mudanças.</div></div>
+      <div class="glossary-item"><div class="glossary-term">commit</div><div class="glossary-def">Um ponto de salvamento com mensagem descritiva. Cada commit tem um código único chamado hash.</div></div>
+      <div class="glossary-item"><div class="glossary-term">branch</div><div class="glossary-def">Uma linha paralela de desenvolvimento. A branch principal geralmente se chama <code class="inline-code">main</code>.</div></div>
+      <div class="glossary-item"><div class="glossary-term">merge</div><div class="glossary-def">A união de duas branches. O Git tenta combinar as mudanças automaticamente.</div></div>
+      <div class="glossary-item"><div class="glossary-term">clone</div><div class="glossary-def">Baixar uma cópia completa de um repositório remoto, incluindo todo o histórico.</div></div>
+      <div class="glossary-item"><div class="glossary-term">push</div><div class="glossary-def">Enviar commits locais para o repositório remoto (GitHub). "Empurrar" para cima.</div></div>
+      <div class="glossary-item"><div class="glossary-term">pull</div><div class="glossary-def">Baixar e aplicar commits do repositório remoto no local. "Puxar" de cima.</div></div>
+      <div class="glossary-item"><div class="glossary-term">staging area</div><div class="glossary-def">Área intermediária onde você prepara as mudanças antes de commitar. O <code class="inline-code">git add</code> move arquivos para cá.</div></div>
+      <div class="glossary-item"><div class="glossary-term">remote</div><div class="glossary-def">Versão do repositório hospedada em servidor externo, como o GitHub. O nome padrão é <code class="inline-code">origin</code>.</div></div>
+      <div class="glossary-item"><div class="glossary-term">pull request</div><div class="glossary-def">Solicitação para que o dono de um repositório aceite suas mudanças. O coração da colaboração no GitHub.</div></div>
+      <div class="glossary-item"><div class="glossary-term">.gitignore</div><div class="glossary-def">Arquivo que diz ao Git quais arquivos ignorar. Útil para senhas, dependências e arquivos temporários.</div></div>
+      <div class="glossary-item"><div class="glossary-term">conflict</div><div class="glossary-def">Quando duas branches modificam a mesma parte de um arquivo. O Git pede que você resolva manualmente.</div></div>
+    </div>
+    <div class="tip-box" style="margin-top:1.5rem">
+      💡 <div><strong>Dica final da Profa. Tereza:</strong> Git parece difícil no começo, mas é como uma língua nova — quanto mais você praticar, mais natural fica. Não tenha medo de errar. No Git, quase tudo tem solução!</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function showSection(name, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('sec-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+
+function toggleChallenge(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+
+function updateProgress() {
+  const checkboxes = document.querySelectorAll('#sec-desafios input[type=checkbox]');
+  const total = checkboxes.length;
+  let done = 0;
+  checkboxes.forEach(cb => { if(cb.checked) done++; });
+  const pct = Math.round((done / total) * 100);
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-text').textContent = done + ' de ' + total + ' desafios concluídos';
+  document.getElementById('progress-pct').textContent = pct + '%';
+}
+
+function copyCode(el) {
+  const text = el.childNodes[0].textContent.trim();
+  navigator.clipboard.writeText(text).then(() => {
+    const hint = el.querySelector('.copy-hint');
+    const orig = hint.textContent;
+    hint.textContent = 'copiado!';
+    setTimeout(() => hint.textContent = orig, 1500);
+  });
+}
+</script>
+</body>
+</html>
