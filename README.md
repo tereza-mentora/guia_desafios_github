@@ -1,6 +1,6 @@
 # 🔴 Guia de Git & GitHub para Iniciantes
 
-- Material educativo desenvolvido pela **Prof. Tereza Cristina de Oliveira** · [Virada no Café](https://viradacafe.github.io/portfolio/)
+- Material educativo desenvolvido pela **[Prof. Tereza Cristina de Oliveira](https://br.linkedin.com/in/tereza-oliveira)** · [Virada no Café](https://viradacafe.github.io/portfolio/)
 - Acesse o Guia com conceitos e desafios aqui [Guia GITHUB](https://tereza-mentora.github.io/guia_desafios_github/)
 
 ---
